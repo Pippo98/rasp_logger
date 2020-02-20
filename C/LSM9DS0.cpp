@@ -8,10 +8,13 @@
 #include <softPwm.h>
 #include <wiringPi.h>
 #include <wiringPiI2C.h>
+#include <wiringPiSPI.h>
 #include <wiringSerial.h>
 #include <string.h>
 #include <iostream>
 #include <fstream>
+
+#include "LSM9DS0.h"
 
 uint8_t ZERO = 0x00;
 uint8_t WHO_AM_I_G = 0x8F;
@@ -94,18 +97,15 @@ void init(int SPIChannel, int CS, int *gyro_scale, int *accel_scale)
     // Wake Up Gyro, enabling x, y, z axis
     send_config(SPIChannel, CS, (uint8_t *)&CTRL_REG1_G_ADD, (uint8_t *)&CTRL_REG1_G_VAL);
 
-    HAL_Delay(1);
-
     // Wake Up Accel, enabling x, y, z axis
     send_config(SPIChannel, CS, (uint8_t *)&CTRL_REG1_XM_ADD, (uint8_t *)&CTRL_REG1_XM_VAL);
-    HAL_Delay(1);
 
     send_config(SPIChannel, CS, (uint8_t *)&CTRL_REG5_XM_ADD, (uint8_t *)&CTRL_REG5_XM_VAL);
     send_config(SPIChannel, CS, (uint8_t *)&CTRL_REG6_XM_ADD, (uint8_t *)&CTRL_REG6_XM_VAL);
     send_config(SPIChannel, CS, (uint8_t *)&CTRL_REG7_XM_ADD, (uint8_t *)&CTRL_REG7_XM_VAL);
 
     // Set Gyro scale range
-    switch (gyro_scale)
+    switch (*gyro_scale)
     {
     case 245:
         send_config(SPIChannel, CS, (uint8_t *)&CTRL_REG4_G, (uint8_t *)&SCL_G_245);
@@ -121,12 +121,12 @@ void init(int SPIChannel, int CS, int *gyro_scale, int *accel_scale)
         break;
     default:
         send_config(SPIChannel, CS, (uint8_t *)&CTRL_REG4_G, (uint8_t *)&SCL_G_245);
-        gyro_scale = 500;
+        *gyro_scale = 500;
         break;
     }
 
     // Set Accel scale range
-    switch (accel_scale)
+    switch (*accel_scale)
     {
     case 2:
         send_config(SPIChannel, CS, (uint8_t *)&CTRL_REG2_XM, (uint8_t *)&SCL_A_2);
@@ -145,7 +145,7 @@ void init(int SPIChannel, int CS, int *gyro_scale, int *accel_scale)
         break;
     default:
         send_config(SPIChannel, CS, (uint8_t *)&CTRL_REG2_XM, (uint8_t *)&SCL_A_4);
-        accel_scale = 4;
+        *accel_scale = 4;
         break;
     }
 }

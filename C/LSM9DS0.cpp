@@ -88,7 +88,7 @@ void send_config(int SPIChannel, int CS, uint8_t *addr, uint8_t *val)
 //accelerometer, gyroscope and magnetometer initialization
 //call this function before requesting data from the sensor
 //hspi = pointer to the spi port defined
-void init(int SPIChannel, int CS, int *gyro_scale, int accel_scale)
+void init(int SPIChannel, int CS, int *gyro_scale, int *accel_scale)
 {
 
     // Wake Up Gyro, enabling x, y, z axis

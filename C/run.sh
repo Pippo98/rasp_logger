@@ -1,6 +1,6 @@
 #!/bin/bash
 
-gcc $1 -o deployable -lwiringPi -lm -lpthread -lstdc++ -lLSM9DS0.h
+gcc $1 -o deployable -lwiringPi -lm -lpthread -lstdc++
 echo "COMPILED"
 echo "Start Program"
 ./deployable
